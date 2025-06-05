@@ -45,9 +45,6 @@ def test_for_older_users_outputs_age_and_valid_entry():
     dob = datetime.strptime("2000-01-01", "%Y-%m-%d").date()
     today = date.today()
     age = today.year - dob.year
-    
-    if(today.month, today.day) < (dob.month, dob.day):
-        age -= 1
         
     assert age_check == f"Access granted. {age} year olds are welcomed."
 
