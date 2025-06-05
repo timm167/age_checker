@@ -1,6 +1,7 @@
 from lib.age_checker import age_checker
 import pytest
-import datetime
+from datetime import date, datetime
+
 
 def test_dob_is_not_string_outputs_invalid():
     
@@ -28,12 +29,39 @@ def test_string_text_outputs_invalid_format():
     
     assert error_message == "Error: Invalid DOB Format"
 
-def test_for_underage_users_outputs_denied_entry():
-    age_check = age_checker("2025/01/01")
-    year = datetime.datetime.now().year()
-    assert age_check == "Access denied. 1 year olds are not old enough."
+def test_for_underage_users_outputs_age_and_denied_entry():
+    age_check = age_checker("2024-01-01")
+    dob = datetime.strptime("2024-01-01", "%Y-%m-%d").date()
+    today = date.today()
+    age = today.year - dob.year
+    
+    if(today.month, today.day) < (dob.month, dob.day):
+        age -= 1
+        
+    assert age_check == f"Access denied. {age} year olds are not old enough. Required age: 16"
 
-print(datetime.datetime.now().year())
+def test_for_older_users_outputs_age_and_valid_entry():
+    age_check = age_checker("2000-01-01")
+    dob = datetime.strptime("2000-01-01", "%Y-%m-%d").date()
+    today = date.today()
+    age = today.year - dob.year
+    
+    if(today.month, today.day) < (dob.month, dob.day):
+        age -= 1
+        
+    assert age_check == f"Access granted. {age} year olds are welcomed."
+
+def test_for_fringe_underage_users_outputs_age_and_denied_entry():
+    age_check = age_checker("2009-12-01")
+    dob = datetime.strptime("2009-12-01", "%Y-%m-%d").date()
+    today = date.today()
+    age = today.year - dob.year
+    
+    if(today.month, today.day) < (dob.month, dob.day):
+        age -= 1
+        
+    assert age_check == f"Access denied. {age} year olds are not old enough. Required age: 16"
+
 '''
 As an admin
 So that I can determine whether a user is old enough
